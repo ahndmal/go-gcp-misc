@@ -22,10 +22,14 @@ func CreateCat1(kind string, cat *Cat1) {
 	if err != nil {
 		log.Panicln(err)
 	}
+
 	defer client.Close()
 	name := cat.Name // name ?
+
 	catKey := datastore.NameKey(kind, name, nil)
-	if _, err := client.Put(ctx, catKey, &cat); err != nil {
+	log.Printf("catKey :: %s", catKey)
+
+	if _, err := client.Put(ctx, catKey, cat); err != nil {
 		log.Fatalf("Error when saving cat: %v", err)
 	}
 	fmt.Printf("Saved %v: %v\n", catKey, cat.Name)

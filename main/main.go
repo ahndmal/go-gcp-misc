@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	cat := go_gcp_misc.Cat1{Id: 2, Name: "Murz", Age: 3, Color: "white"}
+	cat := go_gcp_misc.Cat1{Id: 3, Name: "Murzik", Age: 5, Color: "white"}
 	go_gcp_misc.CreateCat1("Cat1", &cat)
 }

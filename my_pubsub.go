@@ -11,13 +11,14 @@ import (
 func CreateMessage() {
 	ctx := context.Background()
 
-	projId := os.Getenv("")
+	projId := os.Getenv("GCP_PROJ_ID")
 
 	client, err := pubsub.NewClient(ctx, projId)
 	//client, err := pubsub.NewClient(ctx, option.WithCredentialsFile("path/to/keyfile.json"))
 	if err != nil {
 		fmt.Errorf(">>> ERROR :: pubsub.NewClient: %v", err)
 	}
+
 	defer client.Close()
 
 	topic := client.Topic("wiki-pages-main")
