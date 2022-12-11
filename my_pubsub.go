@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync/atomic"
+	"time"
 )
 
 func CreateMessage() {
@@ -35,4 +37,29 @@ func CreateMessage() {
 		fmt.Errorf("pubsub: result.Get: %v", err)
 	}
 	log.Printf(">>> saved message with Id %s", id)
+}
+
+func Listen() {
+	ctx := context.Background()
+	projId := os.Getenv("GCP_PROJ_ID")
+	client, err := pubsub.NewClient(ctx, projId)
+	if err != nil {
+		fmt.Errorf(">>> ERROR :: pubsub.NewClient: %v", err)
+	}
+
+	defer client.Close()
+
+	sub := client.Subscription("sub1")
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	var received int32
+	err = sub.Receive(ctx, func(ctx context.Context, message *pubsub.Message) {
+		fmt.Printf("Got message: %q\n", string(message.Data))
+		atomic.AddInt32(&received, 1)
+		message.Ack()
+	})
+	if err != nil {
+		fmt.Errorf("sub.Receive: %v", err)
+	}
 }
